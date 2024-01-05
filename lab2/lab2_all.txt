@@ -1,0 +1,32 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+
+entity lab2_all is
+port( a,b,c: in std_logic;
+output3: out std_logic);
+end lab2_all;
+
+architecture lab2_all_arch of lab2_all is
+
+component lab2_and
+port(a,b,c : in std_logic;
+output : out std_logic);
+end component;
+
+component lab2_or
+port(a,b,c :in std_logic;
+output2 : out std_logic);
+end component;
+
+signal a_not,b_not,s1,s2,s3:std_logic;
+
+begin
+a_not <=not a;
+b_not <=not b;
+
+U1:lab2_and port map(a => a_not,  b=>b_not, c => c, output => s1);
+U2:lab2_and port map(a => a_not, b => b,c => c,output => s2);
+U3:lab2_and port map(a => a, b => b, c => c,output => s3);
+U4:lab2_or port map(a=>s1, b=>s2, c=>s3, output2 =>output3);
+
+end lab2_all_arch; 

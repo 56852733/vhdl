@@ -1,0 +1,33 @@
+library IEEE;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+
+entity lab3 is
+port( sign_mag : in std_logic_vector(3 downto 0) ;
+      twos_comp : out std_logic_vector(3 downto 0) );
+end lab3;
+
+architecture lab3_arch of lab3 is
+signal sig1 : std_logic_vector (3 downto 0);
+
+begin
+process (sign_mag)
+variable var1:std_logic_vector (2 downto 0);
+
+begin
+var1 := sign_mag (2 downto 0);
+var1 := not var1;
+var1 := var1+"001";
+
+if sign_mag(3) = '0'
+then
+sig1 <= sign_mag;
+else
+sig1 <= sign_mag(3) & var1;
+end if;
+
+end process;
+
+twos_comp<=sig1;
+
+end lab3_arch;

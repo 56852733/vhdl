@@ -1,0 +1,119 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.std_logic_unsigned.all;
+
+entity lab4 is
+port(   din: in std_logic_vector (3 downto 0);
+	reset: in std_logic;
+	clk: in std_logic;
+	sel: in std_logic_vector (1 downto 0);
+	max_out: out std_logic_vector (3 downto 0);
+	min_out: out std_logic_vector (3 downto 0);
+	reg_out: out std_logic_vector (3 downto 0));
+end lab4;
+
+architecture lab4_arch of lab4 is
+
+signal a0, a1, a2, a3, min_next, next_max, reg_max, reg_min: std_logic_vector (3 downto 0);  
+signal reg_max_in, reg_min_in: std_logic; 
+
+begin
+
+process(clk, reset)
+begin
+if (reset = '1') then
+a0 <= "1000";
+a1 <= "1000";
+a2 <= "1000"; 	
+a3 <= "1000";
+
+elsif (rising_edge(clk)) then
+a0 <= din;
+a1 <= a0;
+a2 <= a1;
+a3 <= a2; 
+end if;
+end process;
+
+process(a0, a1, a2, a3)
+begin
+if (a0 >= a1 and a0 >= a2 and a0 >= a3) then
+next_max <= a0;
+elsif (a1 >= a0 and a1 >= a2 and a1 >=	a3) then
+next_max <= a1;
+elsif (a2 >= a0 and a2 >= a1 and a2 >=	a3) then
+next_max <= a2;
+else
+next_max <= a3;
+end if;
+	 
+if (a1 >= a0 and a2 >= a0 and a3 >= a0) then
+min_next <= a0;
+elsif (a0 >= a1 and a2 >= a1 and a3 >= a1) then
+min_next <= a1;
+elsif (a0 >= a2 and a1 >= a2 and a3 >= a2) then
+min_next <= a2;
+else
+min_next <= a3;
+end if;
+end process;
+
+process (clk, reset, reg_max, reg_min)
+begin
+if (next_max >= reg_max) then
+reg_max_in <= '1'; 
+else
+reg_max_in <= '0';
+end if;
+if(reg_min >= min_next) then
+reg_min_in <= '1';
+else
+reg_min_in <= '0';
+end if;
+end process;
+		   
+process(clk, reset)
+begin
+if (reset = '1') then
+reg_max <= "1000";
+reg_min <= "1000";
+		
+elsif (rising_edge(clk)) then
+if (reg_max_in = '1') then
+if (reg_min_in = '1') then
+reg_max <= next_max;
+reg_min <= min_next;
+else
+reg_max <= next_max;
+reg_min <= reg_min;
+end if;	
+elsif (reg_max_in = '0' and reg_min_in = '1') then
+reg_max <= reg_max;                        
+reg_min <= min_next;
+else
+reg_max <= reg_max;
+reg_min <=	reg_min;
+end if;
+else 
+reg_max <= reg_max;
+reg_min <= reg_min;
+end if; 
+end process;
+
+process(a0, a1, a2, a3, sel)
+begin
+if (sel = "00") then
+reg_out <= a0;
+elsif (sel = "01") then
+reg_out <= a1;
+elsif (sel = "10") then
+reg_out <= a2;
+else
+reg_out <= a3;
+end if;
+end process;
+
+max_out <= reg_max;
+min_out <= reg_min;
+
+end lab4_arch;

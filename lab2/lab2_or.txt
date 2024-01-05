@@ -1,0 +1,14 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity lab2_or is
+port
+(a,b,c : in std_logic;
+output2: out std_logic
+);
+end entity lab2_or;
+
+architecture lab2_or_arch of lab2_or is
+begin
+output2 <= a or b or c;
+end lab2_or_arch;

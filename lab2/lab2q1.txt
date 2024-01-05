@@ -1,0 +1,18 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+
+entity lab2_q1 is
+port( a,b,c  : in std_logic;     
+      output : out std_logic);
+end lab2_q1;
+
+architecture lab2_q1_arch of lab2_q1 is
+signal sig1, sig2, sig3 : std_logic;
+begin
+sig1<= (not a) and (not b) and c;
+sig2<= (not a) and b and c;
+sig3<= a and b and c;
+
+output<= sig1 or sig2 or sig3;
+
+end lab2_q1_arch;
